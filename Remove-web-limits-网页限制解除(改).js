@@ -51,6 +51,8 @@
 // @grant       GM_setClipboard
 // @grant       GM_registerMenuCommand
 // @run-at      document-start
+// @downloadURL https://update.greasyfork.org/scripts/28497/Remove%20web%20limits%28modified%29.user.js
+// @updateURL https://update.greasyfork.org/scripts/28497/Remove%20web%20limits%28modified%29.meta.js
 // ==/UserScript==
 (function() {
     'use strict';
@@ -387,7 +389,7 @@
             var odom = document.createElement("div");
             odom.id = "rwl-setMenu";
             odom.style.cssText ="position: fixed;" +
-                "top: 100px;" +
+                "top: 10px;" +
                 "left: 50px;" +
                 "padding: 10px;" +
                 "background: #fff;" +
@@ -707,11 +709,12 @@
     function getElements() {
         var elements = Array.prototype.slice.call(document.getElementsByTagName('*'));
         elements.push(document);
+        hasFrame = Array();
  
         // 循环所有 frame 窗口
         var frames = document.querySelectorAll("frame")
         if(frames){
-            hasFrame = frames;
+            hasFrame.push.apply(hasFrame, frames);
             var frames_element;
             for (let i = 0;i<frames.length;i++){
                 frames_element = Array.prototype.slice.call(frames[i].contentWindow.document.querySelectorAll("*"))
@@ -719,6 +722,17 @@
                 elements = elements.concat(frames_element);
             }
         }
+        var iframes = document.querySelectorAll("iframe")
+        if(iframes){
+            hasFrame.push.apply(hasFrame, iframes);
+            var iframes_element;
+            for (let i = 0;i<iframes.length;i++){
+                iframes_element = Array.prototype.slice.call(iframes[i].contentWindow.document.querySelectorAll("*"))
+                elements.push(iframes[i].contentWindow.document)
+                elements = elements.concat(iframes_element);
+            }
+        }
+
         return elements;
     };
  
